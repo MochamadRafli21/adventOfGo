@@ -50,6 +50,59 @@ func getPoints(hands string)int{
   return points
 }
 
+func decide(opponents string, output string)string{
+  if output == "Y"{
+    //draw
+    return opponents
+  }else if output == "X"{
+    //lose
+    switch opponents {
+    case "Rock":
+      return "Scissors"
+    case "Paper":
+      return "Rock"
+    case "Scissors":
+      return "Paper"
+    }
+  }else if output == "Z"{
+    //win
+    switch opponents {
+    case "Rock":
+      return "Paper"
+    case "Paper":
+      return "Scissors"
+    case "Scissors":
+      return "Rock"
+    }
+  }
+
+  panic("Cant decide my hand")
+}
+
+func getMyHand(info string)int{
+  points := 0
+  strategy := strings.Split(info, " ")
+  yourHand := decrypt(strategy[0])
+  myHand := decide(yourHand, strategy[1])
+  switch myHand {
+  case "Rock":
+   points += 1
+  case "Paper":
+    points += 2
+  case "Scissors":
+    points += 3
+  }
+  
+  switch strategy[1] {
+  case "Y":
+    points += 3
+  case "Z":
+    points += 6
+  }
+
+  return points
+}
+
 func main(){
   cals, err :=  os.Open("./input.txt")
   if err != nil {
@@ -63,7 +116,7 @@ func main(){
   points := 0
   for scaner.Scan() {
     lines := scaner.Text()
-    points += getPoints(lines)
+    points += getMyHand(lines)
   }
   fmt.Println(points)
 }
